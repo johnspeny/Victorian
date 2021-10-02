@@ -3,6 +3,12 @@
 
 #include "GameSprite.h"
 
+enum {
+	BlockGap,
+	Block1,
+	Block2,
+	Block3,
+};
 
 class Block : public GameSprite {
 private:
@@ -15,6 +21,8 @@ public:
 	static Block* create();
 
 	void setupBlock(int blockW, int blockH, int type);
+
+
 };
 
 #endif // !__BLOCK_H__

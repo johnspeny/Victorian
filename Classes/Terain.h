@@ -7,12 +7,20 @@
 class Terain : public cocos2d::Sprite
 {
 public:
-	Terain();
+	Terain(void);
 	~Terain();
 
 	static Terain* create();
 
 private:
+
+	cocos2d::Size _screenSize;
+
+	std::vector<Block*> _blockPool;
+	std::vector<Block*> _blocks;
+
+	float _currentTerainWidth;
+	float _minTerainWidth;
 
 	void initTerain();
 
