@@ -1,7 +1,9 @@
 #include "Block.h"
 
-#define TILE_WIDTH 6
-#define TILE_HEIGHT 3
+
+#define TILE_WIDTH 8
+#define TILE_HEIGHT 6
+
 
 Block::Block()
 {
@@ -10,9 +12,24 @@ Block::Block()
 	height = _screenSize.height / TILE_HEIGHT;
 }
 
+
 Block::~Block()
 {
 }
+
+
+Block* Block::create()
+{
+	Block* block = new Block();
+	if (block && block->initWithFile("box.png"))
+	{
+		block->autorelease();
+		return block;
+	}
+	CC_SAFE_DELETE(block);
+	return nullptr;
+}
+
 
 void Block::setupBlock(int blockW, int blockH, int type)
 {

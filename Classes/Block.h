@@ -12,6 +12,8 @@ public:
 	Block();
 	~Block();
 
+	static Block* create();
+
 	void setupBlock(int blockW, int blockH, int type);
 };
 

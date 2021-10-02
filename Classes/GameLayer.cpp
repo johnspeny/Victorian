@@ -10,5 +10,13 @@ bool GameLayer::init()
 	{
 		return false;
 	}
+
+		// create a game batch 
+		_gameBatchNode = SpriteBatchNode::create("box.png");
+		this->addChild(_gameBatchNode, GameMiddleground);
+
+		terain = Terain::create();
+		_gameBatchNode->addChild(terain, GameMiddleground);
+	
 	return true;
 }
