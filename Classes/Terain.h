@@ -16,6 +16,13 @@ private:
 
 	cocos2d::Size _screenSize;
 
+	float _lastblockHeight;
+	float _lastblockWidth;
+
+	int _currentTypeIndex;
+
+	int _blockpoolIndex;
+
 	std::vector<Block*> _blockPool;
 	std::vector<Block*> _blocks;
 

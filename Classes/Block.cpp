@@ -37,7 +37,7 @@ Block* Block::create()
 
 
 void Block::setupBlock(int blockW, int blockH, int type)
-{
+{ 
 	_width = width * blockW; 
 	_height = height * blockH; 
 	int _type = type;
