@@ -12,6 +12,10 @@ public:
 
 	static Terain* create();
 
+	CC_SYNTHESIZE(bool, _startTerain, StartTerain);
+
+	void move(float xSpeed);
+
 private:
 
 	cocos2d::Size _screenSize;
@@ -30,6 +34,17 @@ private:
 	float _minTerainWidth;
 
 	void initTerain();
+
+	inline float getWidth() { 
+		float width = 0;
+		Block* block;
+		for (size_t i = 0; i < _blocks.size(); i++)
+		{
+			block = _blocks.at(i);
+			width += block->getWidth();
+		}
+		return width;
+	};
 
 };
 

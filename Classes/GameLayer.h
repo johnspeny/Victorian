@@ -14,8 +14,13 @@ class GameLayer : public cocos2d::Scene {
 private:
 	Terain* terain;
 	cocos2d::SpriteBatchNode* _gameBatchNode;
+	
+	void onMouseBegan(cocos2d::Event* event);
+	void onMouseEnded(cocos2d::Event* event);
+
 public:
-	bool virtual init();
+	virtual bool init();
+	virtual void update(float dt);
 };
 
 

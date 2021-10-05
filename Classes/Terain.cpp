@@ -15,6 +15,7 @@ Terain::Terain(void)
 	_currentTerainWidth = 0;
 	_blockpoolIndex = 0;
 	_currentTypeIndex = 0;
+	_startTerain = false;
 }
 
 Terain::~Terain()
@@ -33,6 +34,93 @@ Terain* Terain::create()
 	}
 	CC_SAFE_DELETE(terain);
     return nullptr;
+}
+
+void Terain::move(float xSpeed)
+{
+	if (_startTerain)
+	{
+		// move the terain to the left
+		this->setPositionX(this->getPositionX() - xSpeed);
+
+		// wen a block leaves the screen we move it to the end of _blocks array
+		// and reinitialise it as a new block
+		auto block = _blocks.at(0);
+		//log("pos %f", _position.x);
+		if (_position.x + block->getWidth() < 0)
+		{
+			auto firstBlock = _blocks.at(0);
+			_blocks.erase(_blocks.begin() + 0);
+			_blocks.push_back(firstBlock);
+			// position of terain and new block is set to zero
+			_position.x += block->getWidth();
+
+			// get the current width of terain
+			float width_cnt = this->getWidth() - block->getWidth() - (_blocks.at(0))->getWidth();
+			//log("block width %f", block->getWidth());
+			//log("total width %f", (_blocks.at(0))->getWidth());
+
+			
+
+			while (width_cnt < _minTerainWidth)
+			{
+				auto block = _blockPool.at(_blockpoolIndex);
+				_blockpoolIndex++;
+				if (_blockpoolIndex == _blockPool.size())
+				{
+					_blockpoolIndex = 0;
+				}
+
+				// while adding init block(make them visible)
+				// more to this
+				int _type = _blockTypes[_currentTypeIndex];
+				if (_currentTypeIndex == _blockTypes.size())
+				{
+					_currentTypeIndex = 0;
+				}
+				_currentTypeIndex++;
+
+
+
+				if (_startTerain)
+				{
+					_lastblockHeight = 2;
+					_lastblockWidth = rand() % 2 + 2;
+					block->setupBlock(_lastblockWidth, _lastblockHeight, _type);
+				}
+				
+
+				// blocks width continue to be added
+				width_cnt += block->getWidth();
+
+
+				// we create a terain body and add blocks into it
+				_blocks.push_back(block);
+
+			}
+
+
+			// ditribute the blocks
+			for (size_t i = 0; i < _blocks.size(); i++)
+			{
+				auto block = _blocks.at(i);
+
+				// block at index (0, 0) to be at position (0, 0)
+				if (i != 0)
+				{
+					auto prev_block = _blocks.at(i - 1);
+
+					block->setPositionX(prev_block->getPositionX() + prev_block->getWidth());
+				}
+				else
+				{
+					block->setPositionX(0);
+				}
+
+			}
+		}
+
+	}
 }
 
 void Terain::initTerain()
@@ -59,7 +147,6 @@ void Terain::initTerain()
 
 		// while adding init block(make them visible)
 		// more to this
-
 		int _type = _blockTypes[_currentTypeIndex];
 		if (_currentTypeIndex == _blockTypes.size())
 		{
@@ -67,12 +154,21 @@ void Terain::initTerain()
 		}
 		_currentTypeIndex++;
 
-		_lastblockHeight = 2;
-		_lastblockWidth = rand() % 2 + 2;
-		block->setupBlock(_lastblockWidth, _lastblockHeight, _type);
+
+
+		if (_startTerain)
+		{
+		}
+		else {
+			_lastblockHeight = 2;
+			_lastblockWidth = rand() % 2 + 2;
+			block->setupBlock(_lastblockWidth, _lastblockHeight, _type);
+
+		}
 
 		// blocks width continue to be added
 		_currentTerainWidth += block->getWidth();
+
 
 
 		// we create a terain body and add blocks into it
