@@ -6,7 +6,16 @@ using namespace cocos2d;
 
 int types[] = {1, 2, 3, 1, 3, 2, 1, 3};
 
+int patterns[] = {1, 1, 2, 1, 3};
+
+int widths[] = {2, 2, 3};
+
+int heights[] = { 0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,3,3,3,3,3,3,4 };
+
 std::vector<int> _blockTypes(types, types + sizeof(types)/sizeof(int));
+std::vector<int> _blockwidths(widths, widths + sizeof(widths)/sizeof(int));
+std::vector<int> _blockheights(heights, heights + sizeof(heights)/sizeof(int));
+std::vector<int> _blockpattern(patterns, patterns + sizeof(patterns)/sizeof(int));
 
 Terain::Terain(void)
 {
@@ -16,6 +25,12 @@ Terain::Terain(void)
 	_blockpoolIndex = 0;
 	_currentTypeIndex = 0;
 	_startTerain = false;
+	_showGap = false;
+
+	_currentWidthIndex = 0;
+	_currentHeightIndex = 0;
+	_currentPatternCnt = 0;
+	_currentPatternIndex = 0;
 }
 
 Terain::~Terain()
@@ -62,8 +77,114 @@ void Terain::move(float xSpeed)
 
 			
 
+
+
+
+
+
+			// while adding init block(make them visible)
+				// more to this
+			int blockWidth;
+			int blockHeight;
+
+			
+			int _type = _blockTypes[_currentTypeIndex];
+			if (_currentTypeIndex == _blockTypes.size())
+			{
+				_currentTypeIndex = 0;
+			}
+			_currentTypeIndex++;
+
+
+
+			if (_startTerain)
+			{
+				if (_showGap)
+				{
+
+					int gap = rand() % 2;
+					if (gap < 2) gap = 2;
+
+					block->setupBlock(gap, 0, BlockGap);
+
+					log("gap %d", gap);
+					_showGap = false;
+				}
+				else
+				{
+
+					// get widths
+					blockWidth = _blockwidths[_currentWidthIndex];
+					if (_currentWidthIndex == _blockwidths.size())
+					{
+						std::random_shuffle(_blockwidths.begin(), _blockwidths.end());
+						_currentWidthIndex = 0;
+					}
+					_currentWidthIndex++;
+
+					// get heights
+					if (_blockheights[_currentHeightIndex] != 0)
+					{
+						blockHeight = _blockheights[_currentHeightIndex];
+						log("not 0 heights %d", blockHeight);
+						if (blockHeight - _lastblockHeight > 2 && _gapSize == 2)
+						{
+							blockHeight = 1;
+						}
+					}
+					else {
+						blockHeight = _lastblockHeight;
+						log("0 heights %d", blockHeight);
+					}
+
+					if (_currentHeightIndex == _blockheights.size())
+					{
+						_currentHeightIndex = 0;
+						std::random_shuffle(_blockheights.begin(), _blockheights.end());
+					}
+					_currentHeightIndex++;
+
+					// get patterns
+					_currentPatternCnt++;
+					if (_currentPatternCnt > _blockpattern[_currentPatternIndex])
+					{
+
+						_showGap = true;
+						// start new pattern
+						_currentPatternIndex++;
+						if (_currentPatternIndex == _blockpattern.size())
+						{
+							std::random_shuffle(_blockpattern.begin(), _blockpattern.end());
+							_currentPatternIndex = 0;
+						}
+						log("pCnt %d", _currentPatternCnt);
+						_currentPatternCnt = 1;
+					}
+
+
+					// apply to setupBlock
+					// show gap when pattern 
+
+					block->setupBlock(blockWidth, blockHeight, _type);
+					_lastblockWidth = blockWidth;
+					_lastblockHeight = blockHeight;
+				}
+
+			}
+
+
+
+
+
+
+
+
 			while (width_cnt < _minTerainWidth)
 			{
+
+				int blockWidth;
+				int blockHeight;
+
 				auto block = _blockPool.at(_blockpoolIndex);
 				_blockpoolIndex++;
 				if (_blockpoolIndex == _blockPool.size())
@@ -73,20 +194,82 @@ void Terain::move(float xSpeed)
 
 				// while adding init block(make them visible)
 				// more to this
-				int _type = _blockTypes[_currentTypeIndex];
-				if (_currentTypeIndex == _blockTypes.size())
-				{
-					_currentTypeIndex = 0;
-				}
-				_currentTypeIndex++;
-
-
-
+							   
+							   
+				
 				if (_startTerain)
 				{
-					_lastblockHeight = 2;
-					_lastblockWidth = rand() % 2 + 2;
-					block->setupBlock(_lastblockWidth, _lastblockHeight, _type);
+					if (_showGap)
+					{
+						
+						int gap = rand() % 2;
+						if (gap < 2) gap = 2;
+
+						block->setupBlock(gap, 0, BlockGap);
+
+						log("gap %d", gap);
+						_showGap = false;
+					}
+					else
+					{
+
+						// get widths
+						blockWidth = _blockwidths[_currentWidthIndex];
+						if (_currentWidthIndex == _blockwidths.size())
+						{
+							std::random_shuffle(_blockwidths.begin(), _blockwidths.end());
+							_currentWidthIndex = 0;
+						}
+						_currentWidthIndex++;
+
+						// get heights
+						if (_blockheights[_currentHeightIndex] != 0)
+						{
+							blockHeight = _blockheights[_currentHeightIndex];
+							log("not 0 heights %d", blockHeight);
+							if (blockHeight - _lastblockHeight > 2 && _gapSize == 2)
+							{
+								blockHeight = 1;
+							}
+						}
+						else {
+							blockHeight = _lastblockHeight;
+							log("0 heights %d", blockHeight);
+						}
+
+						if (_currentHeightIndex == _blockheights.size())
+						{
+							_currentHeightIndex = 0;
+							std::random_shuffle(_blockheights.begin(), _blockheights.end());
+						}
+						_currentHeightIndex++;
+
+						// get patterns
+						_currentPatternCnt++;
+						if (_currentPatternCnt > _blockpattern[_currentPatternIndex])
+						{
+
+							_showGap = true;
+							// start new pattern
+							_currentPatternIndex++;
+							if (_currentPatternIndex == _blockpattern.size())
+							{
+								std::random_shuffle(_blockpattern.begin(), _blockpattern.end());
+								_currentPatternIndex = 0;
+							}
+							log("pCnt %d", _currentPatternCnt);
+							_currentPatternCnt = 1;
+						}
+
+
+						// apply to setupBlock
+						// show gap when pattern 
+
+						block->setupBlock(blockWidth, blockHeight, _type);
+						_lastblockWidth = blockWidth;
+						_lastblockHeight = blockHeight;
+					}
+
 				}
 				
 
@@ -125,6 +308,8 @@ void Terain::move(float xSpeed)
 
 void Terain::initTerain()
 {
+	_gapSize = 2;
+
 	// add blocks to a blocks pool
 	for (size_t i = 0; i < 20; i++)
 	{
@@ -132,6 +317,11 @@ void Terain::initTerain()
 		this->addChild(block);
 		_blockPool.push_back(block);
 	}
+
+	// shuffle
+	std::random_shuffle(_blockpattern.begin(), _blockpattern.end());
+	std::random_shuffle(_blockwidths.begin(), _blockwidths.end());
+	std::random_shuffle(_blockheights.begin(), _blockheights.end());
 
 	_minTerainWidth = _screenSize.width * 1.5f;
 

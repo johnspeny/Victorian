@@ -20,10 +20,18 @@ private:
 
 	cocos2d::Size _screenSize;
 
+	int _currentPatternCnt;
+	int _currentPatternIndex;
+
+	bool _showGap;
+	int _gapSize;
+
 	float _lastblockHeight;
 	float _lastblockWidth;
 
 	int _currentTypeIndex;
+	int _currentWidthIndex;
+	int _currentHeightIndex;
 
 	int _blockpoolIndex;
 

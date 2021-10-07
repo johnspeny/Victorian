@@ -34,7 +34,7 @@ bool GameLayer::init()
 
 void GameLayer::update(float dt)
 {
-	terain->move(0.5);
+	terain->move(2);
 }
 
 
